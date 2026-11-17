@@ -15,6 +15,10 @@ async function startServer() {
       throw new Error('MONGODB_URI não configurada.');
     }
 
+    if (!process.env.JWT_SECRET) {
+      throw new Error('JWT_SECRET não configurada.');
+    }
+
     await mongoose.connect(MONGODB_URI);
 
     console.log('MongoDB conectado com sucesso!');

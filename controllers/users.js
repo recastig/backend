@@ -1,4 +1,6 @@
 const bcrypt = require('bcryptjs');
+const jwt = require('jsonwebtoken');
+
 const User = require('../models/user');
 
 const createUser = async (req, res) => {
@@ -39,4 +41,46 @@ const createUser = async (req, res) => {
   }
 };
 
-module.exports = { createUser };
+const loginUser = async (req, res) => {
+  const { email, password } = req.body;
+
+  try {
+    const user = await User.findOne({ email }).select('+password');
+
+    if (!user) {
+      return res.status(401).json({
+        message: 'E-mail ou senha incorretos.',
+      });
+    }
+
+    const isPasswordValid = await bcrypt.compare(
+      password,
+      user.password,
+    );
+
+    if (!isPasswordValid) {
+      return res.status(401).json({
+        message: 'E-mail ou senha incorretos.',
+      });
+    }
+
+    const token = jwt.sign(
+      { _id: user._id.toString() },
+      process.env.JWT_SECRET,
+      { expiresIn: '7d' },
+    );
+
+    return res.status(200).json({
+      token,
+    });
+  } catch (error) {
+    return res.status(500).json({
+      message: 'Erro interno ao realizar login.',
+    });
+  }
+};
+
+module.exports = {
+  createUser,
+  loginUser,
+};

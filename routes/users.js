@@ -1,7 +1,7 @@
 const express = require('express');
 const { body } = require('express-validator');
 
-const { createUser } = require('../controllers/users');
+const { createUser, loginUser } = require('../controllers/users');
 const validateRequest = require('../middlewares/validateRequest');
 
 const router = express.Router();
@@ -34,6 +34,26 @@ router.post(
   ],
   validateRequest,
   createUser,
+);
+
+router.post(
+  '/signin',
+  [
+    body('email')
+      .isEmail()
+      .withMessage('Informe um e-mail válido.')
+      .bail()
+      .normalizeEmail(),
+
+    body('password')
+      .isString()
+      .withMessage('A senha deve ser um texto.')
+      .bail()
+      .notEmpty()
+      .withMessage('Informe sua senha.'),
+  ],
+  validateRequest,
+  loginUser,
 );
 
 module.exports = router;
