@@ -1,5 +1,6 @@
 const express = require('express');
 const userRoutes = require('./routes/users');
+const movieRoutes = require('./routes/movies');
 
 const app = express();
 
@@ -13,6 +14,7 @@ app.get('/api/health', (req, res) => {
 });
 
 app.use(userRoutes);
+app.use(movieRoutes);
 
 app.use((req, res) => {
   res.status(404).json({
