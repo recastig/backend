@@ -1,6 +1,6 @@
 const bcrypt = require('bcryptjs');
 const jwt = require('jsonwebtoken');
-
+const { JWT_SECRET } = require('../config/index');
 const User = require('../models/user');
 
 const {
@@ -47,20 +47,15 @@ const loginUser = async (req, res, next) => {
       throw new UnauthorizedError('E-mail ou senha incorretos.');
     }
 
-    const isPasswordValid = await bcrypt.compare(
-      password,
-      user.password,
-    );
+    const isPasswordValid = await bcrypt.compare(password, user.password);
 
     if (!isPasswordValid) {
       throw new UnauthorizedError('E-mail ou senha incorretos.');
     }
 
-    const token = jwt.sign(
-      { _id: user._id.toString() },
-      process.env.JWT_SECRET,
-      { expiresIn: '7d' },
-    );
+    const token = jwt.sign({ _id: user._id.toString() }, JWT_SECRET, {
+      expiresIn: '7d',
+    });
 
     return res.status(200).json({
       token,
