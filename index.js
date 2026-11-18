@@ -3,11 +3,14 @@ const mongoose = require('mongoose');
 require('dotenv').config();
 
 const app = require('./app');
+const {
+  PORT,
+  MONGODB_URI,
+  JWT_SECRET,
+  IS_PRODUCTION,
+} = require('./config/index');
 
-const PORT = process.env.PORT || 3000;
-const { MONGODB_URI } = process.env;
-
-if (process.env.NODE_ENV !== 'production') {
+if (!IS_PRODUCTION) {
   dns.setServers(['8.8.8.8', '8.8.4.4']);
 }
 
@@ -17,7 +20,7 @@ async function startServer() {
       throw new Error('MONGODB_URI não configurada.');
     }
 
-    if (!process.env.JWT_SECRET) {
+    if (!JWT_SECRET) {
       throw new Error('JWT_SECRET não configurada.');
     }
 

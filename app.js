@@ -1,16 +1,11 @@
 const express = require('express');
 const helmet = require('helmet');
-
 const routes = require('./routes/index');
-
 const rateLimiter = require('./middlewares/rateLimiter');
 const errorHandler = require('./middlewares/errorHandler');
-const {
-  requestLogger,
-  errorLogger,
-} = require('./middlewares/requestLogger');
-
+const { requestLogger, errorLogger } = require('./middlewares/requestLogger');
 const { NotFoundError } = require('./utils/errors');
+const { HTTP_STATUS, MESSAGES } = require('./config/constants');
 
 const app = express();
 
@@ -25,16 +20,16 @@ app.use(rateLimiter);
 app.use(express.json());
 
 app.get('/api/health', (req, res) => {
-  res.status(200).json({
+  res.status(HTTP_STATUS.OK).json({
     status: 'ok',
-    message: 'API Cineroleta funcionando!',
+    message: MESSAGES.API_RUNNING,
   });
 });
 
 app.use('/api', routes);
 
 app.use((req, res, next) => {
-  next(new NotFoundError('Rota não encontrada.'));
+  next(new NotFoundError(MESSAGES.ROUTE_NOT_FOUND));
 });
 
 app.use(errorHandler);
