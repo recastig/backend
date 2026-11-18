@@ -1,6 +1,8 @@
 const express = require('express');
 const userRoutes = require('./routes/users');
 const movieRoutes = require('./routes/movies');
+const errorHandler = require('./middlewares/errorHandler');
+const { NotFoundError } = require('./utils/errors');
 
 const app = express();
 
@@ -16,11 +18,10 @@ app.get('/api/health', (req, res) => {
 app.use(userRoutes);
 app.use(movieRoutes);
 
-app.use((req, res) => {
-  res.status(404).json({
-    message: 'Rota não encontrada.',
-    path: req.originalUrl,
-  });
+app.use((req, res, next) => {
+  next(new NotFoundError('Rota não encontrada.'));
 });
+
+app.use(errorHandler);
 
 module.exports = app;
