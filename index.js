@@ -1,13 +1,15 @@
 const dns = require('dns');
-
-dns.setServers(['8.8.8.8', '8.8.4.4']);
+const mongoose = require('mongoose');
 require('dotenv').config();
 
-const mongoose = require('mongoose');
 const app = require('./app');
 
 const PORT = process.env.PORT || 3000;
 const { MONGODB_URI } = process.env;
+
+if (process.env.NODE_ENV !== 'production') {
+  dns.setServers(['8.8.8.8', '8.8.4.4']);
+}
 
 async function startServer() {
   try {
@@ -23,7 +25,7 @@ async function startServer() {
 
     console.log('MongoDB conectado com sucesso!');
 
-    app.listen(PORT, () => {
+    app.listen(PORT, '0.0.0.0', () => {
       console.log(`Cineroleta API rodando na porta ${PORT}`);
     });
   } catch (error) {

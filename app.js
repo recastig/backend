@@ -14,18 +14,16 @@ const { NotFoundError } = require('./utils/errors');
 
 const app = express();
 
-// Registrar requisições e respostas HTTP.
+if (process.env.NODE_ENV === 'production') {
+  app.set('trust proxy', 1);
+}
 app.use(requestLogger);
 app.use(errorLogger);
 
-// Aplicar proteções de segurança.
 app.use(helmet());
 app.use(rateLimiter);
-
-// Permitir o recebimento de dados em JSON.
 app.use(express.json());
 
-// Verificar o funcionamento da API.
 app.get('/api/health', (req, res) => {
   res.status(200).json({
     status: 'ok',
@@ -33,15 +31,12 @@ app.get('/api/health', (req, res) => {
   });
 });
 
-// Rotas da aplicação.
 app.use(routes);
 
-// Tratar rotas inexistentes.
 app.use((req, res, next) => {
   next(new NotFoundError('Rota não encontrada.'));
 });
 
-// Tratamento centralizado de erros.
 app.use(errorHandler);
 
 module.exports = app;
