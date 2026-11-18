@@ -80,7 +80,30 @@ const loginUser = async (req, res) => {
   }
 };
 
+const getCurrentUser = async (req, res) => {
+  try {
+    const user = await User.findById(req.user._id);
+
+    if (!user) {
+      return res.status(404).json({
+        message: 'Usuário não encontrado.',
+      });
+    }
+
+    return res.status(200).json({
+      _id: user._id,
+      name: user.name,
+      email: user.email,
+    });
+  } catch (error) {
+    return res.status(500).json({
+      message: 'Erro interno ao buscar usuário.',
+    });
+  }
+};
+
 module.exports = {
   createUser,
   loginUser,
+  getCurrentUser,
 };

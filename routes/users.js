@@ -1,10 +1,11 @@
 const express = require('express');
 const { body } = require('express-validator');
 
-const { createUser, loginUser } = require('../controllers/users');
+const { createUser, loginUser, getCurrentUser } = require('../controllers/users');
 const validateRequest = require('../middlewares/validateRequest');
 
 const router = express.Router();
+const auth = require('../middlewares/auth');
 
 router.post(
   '/signup',
@@ -55,5 +56,7 @@ router.post(
   validateRequest,
   loginUser,
 );
+
+router.get('/users/me', auth, getCurrentUser);
 
 module.exports = router;
