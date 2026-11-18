@@ -1,8 +1,7 @@
 const express = require('express');
 const helmet = require('helmet');
 
-const userRoutes = require('./routes/users');
-const movieRoutes = require('./routes/movies');
+const routes = require('./routes/index');
 
 const rateLimiter = require('./middlewares/rateLimiter');
 const errorHandler = require('./middlewares/errorHandler');
@@ -15,20 +14,18 @@ const { NotFoundError } = require('./utils/errors');
 
 const app = express();
 
-// Registrar todas as requisições e respostas HTTP.
+// Registrar requisições e respostas HTTP.
 app.use(requestLogger);
 app.use(errorLogger);
 
-// Adicionar cabeçalhos HTTP de segurança.
+// Aplicar proteções de segurança.
 app.use(helmet());
-
-// Limitar a quantidade de requisições por IP.
 app.use(rateLimiter);
 
 // Permitir o recebimento de dados em JSON.
 app.use(express.json());
 
-// Verificar se a API está funcionando.
+// Verificar o funcionamento da API.
 app.get('/api/health', (req, res) => {
   res.status(200).json({
     status: 'ok',
@@ -37,8 +34,7 @@ app.get('/api/health', (req, res) => {
 });
 
 // Rotas da aplicação.
-app.use(userRoutes);
-app.use(movieRoutes);
+app.use(routes);
 
 // Tratar rotas inexistentes.
 app.use((req, res, next) => {
