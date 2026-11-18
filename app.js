@@ -31,7 +31,7 @@ app.get('/api/health', (req, res) => {
   });
 });
 
-app.use(routes);
+app.use('/api', routes);
 
 app.use((req, res, next) => {
   next(new NotFoundError('Rota não encontrada.'));
