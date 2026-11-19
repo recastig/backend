@@ -1,5 +1,6 @@
 const express = require('express');
 const helmet = require('helmet');
+const cors = require('cors');
 const routes = require('./routes/index');
 const rateLimiter = require('./middlewares/rateLimiter');
 const errorHandler = require('./middlewares/errorHandler');
@@ -8,6 +9,15 @@ const { NotFoundError } = require('./utils/errors');
 const { HTTP_STATUS, MESSAGES } = require('./config/constants');
 
 const app = express();
+
+const allowedOrigins = [
+  'http://localhost:5173',
+  'https://cineroleta-xi.vercel.app',
+];
+
+app.use(cors({
+  origin: allowedOrigins,
+}));
 
 if (process.env.NODE_ENV === 'production') {
   app.set('trust proxy', 1);
