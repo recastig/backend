@@ -13,6 +13,7 @@ const app = express();
 const allowedOrigins = [
   'http://localhost:5173',
   'https://cineroleta-xi.vercel.app',
+  'https://cineroleta-87sjk6jch-around5.vercel.app',
 ];
 
 app.use(cors({
